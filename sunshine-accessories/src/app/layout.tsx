@@ -1,19 +1,25 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-// --- START CHANGES HERE ---
-import { Inter, Playfair_Display } from "next/font/google"; // Use Google Fonts instead of Geist
-// --- END CHANGES HERE ---
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer"; // Assuming Footer is now found.
+// import { Toaster } from "@/components/ui/toaster"; // REMOVE THIS LINE
+import { Toaster } from "sonner"; // NEW: Import Toaster from sonner
 
-// --- START CHANGES HERE ---
+import { CartProvider } from "@/context/CartContext";
+
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair-display" });
-// --- END CHANGES HERE ---
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair-display",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Sunshine Accessories - Exquisite Jewelry",
-  description: "Discover timeless and brilliant jewelry crafted with passion and ethical sourcing.",
+  title: "Sunshine Accessories",
+  description: "Crafted for moments that last forever. Discover the art of fine jewelry.",
 };
 
 export default function RootLayout({
@@ -24,14 +30,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        // --- START CHANGES HERE ---
-        className={`${inter.variable} ${playfair.variable} font-sans antialiased`} // Apply Google Font variables and Tailwind utility class
-        // --- END CHANGES HERE ---
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          inter.variable,
+          playfair.variable
+        )}
       >
-        <Header />
-        <main className="pt-20">
+        <CartProvider>
+          <Header />
           {children}
-        </main>
+          <Footer />
+          <Toaster /> {/* This remains the same, but it's now from sonner */}
+        </CartProvider>
       </body>
     </html>
   );
