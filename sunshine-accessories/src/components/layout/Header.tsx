@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button'; // Assuming you still want to use Shadcn Button
-import { Menu, X, ShoppingBag, Search, User } from 'lucide-react'; // Icons for mobile menu, cart, search, user
+import { Button } from '@/components/ui/button';
+import { Menu, X, ShoppingBag, Search, User } from 'lucide-react';
+import { motion } from "framer-motion";
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
