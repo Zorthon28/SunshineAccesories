@@ -1,0 +1,15 @@
+# netlify.toml
+[build]
+  publish = ".next"
+  command = "npm run build"
+
+[[plugins]]
+package = "@netlify/plugin-nextjs"
+
+# Important: This redirect ensures client-side routing works for Next.js App Router.
+# It redirects all non-file paths to the root index function, allowing Next.js to handle routing.
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/___netlify-handler"
+  status = 200
+  force = true # Ensures this redirect always applies
