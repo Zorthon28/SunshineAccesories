@@ -1,14 +1,18 @@
+// src/components/layout/HeroSection.tsx
 "use client"; // Keep this at the very top!
 
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { motion, type Variants } from 'framer-motion'; // Import 'Variants' type for better type safety
-// You don't need to import Easing directly for common strings like "easeInOut" if using the array format
+import { motion, type Variants } from 'framer-motion';
 
 interface HeroSectionProps {
-  imageUrl: string;
-  imageAlt: string;
+  // Make imageUrl and imageAlt optional
+  imageUrl?: string;
+  imageAlt?: string;
+  // Add a new optional prop for the gradient Tailwind class
+  gradientClass?: string;
+
   headline: string;
   subheadline: string;
   ctaText: string;
@@ -21,6 +25,7 @@ interface HeroSectionProps {
 const HeroSection: React.FC<HeroSectionProps> = ({
   imageUrl,
   imageAlt,
+  gradientClass, // Destructure the new prop
   headline,
   subheadline,
   ctaText,
@@ -29,25 +34,19 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   secondaryCtaLink,
   videoUrl,
 }) => {
-  // Animation variants for text elements
-  // Use cubic-bezier array for 'ease' to satisfy TypeScript's Easing type
-  // Common easings:
-  // "easeOut" is often [0, 0.55, 0.45, 1]
-  // "easeInOut" is often [0.42, 0, 0.58, 1] (or [0.42, 0, 0.58, 1] for web standard ease-in-out)
-  const textVariants: Variants = { // Explicitly type as Variants
+  const textVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.42, 0, 0.58, 1] } }, // Using cubic-bezier array for ease
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.42, 0, 0.58, 1] } },
   };
 
-  // Animation variants for button
-  const buttonVariants: Variants = { // Explicitly type as Variants
+  const buttonVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.42, 0, 0.58, 1], delay: 0.3 } }, // Using cubic-bezier array for ease
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.42, 0, 0.58, 1], delay: 0.3 } },
   };
 
   return (
     <section className="relative w-full h-[700px] md:h-[900px] lg:h-[100vh] flex items-center justify-center overflow-hidden">
-      {/* Background Media (Image or Video) */}
+      {/* Background Media (Video, Image, or Gradient) */}
       {videoUrl ? (
         <video
           autoPlay
@@ -59,18 +58,24 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           <source src={videoUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-      ) : (
+      ) : imageUrl ? (
         <Image
           src={imageUrl}
-          alt={imageAlt}
+          alt={imageAlt || ''} // Ensure alt is not undefined even if optional
           fill
           priority
           className="object-cover object-center transition-transform duration-700 ease-out hover:scale-103"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
         />
+      ) : gradientClass ? ( // NEW: Render gradient if gradientClass is provided
+        <div className={`absolute inset-0 w-full h-full pointer-events-none ${gradientClass}`}></div>
+      ) : (
+        // Fallback if no video, image, or gradient class is provided
+        <div className="absolute inset-0 w-full h-full bg-gray-800"></div>
       )}
 
-      {/* Elegant Overlays */}
+      {/* Elegant Overlays (can remain or be adjusted/removed depending on desired look) */}
+      {/* These might interact differently with a solid gradient vs. an image. Test and adjust. */}
       <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 via-transparent to-transparent opacity-10 md:opacity-15"></div>
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-40 md:opacity-30"></div>
 
@@ -89,10 +94,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </motion.h1>
           <motion.p
             className="text-white text-lg md:text-xl lg:text-2xl max-w-xl md:max-w-none mb-8 md:mb-10 drop-shadow-md"
-            variants={textVariants} // Still using textVariants
+            variants={textVariants}
             initial="hidden"
             animate="visible"
-            transition={{ delay: 0.1, duration: 0.8, ease: [0.42, 0, 0.58, 1] }} // Updated ease
+            transition={{ delay: 0.1, duration: 0.8, ease: [0.42, 0, 0.58, 1] }}
           >
             {subheadline}
           </motion.p>
